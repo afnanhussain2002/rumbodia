@@ -1,0 +1,11 @@
+node_modules
+.next
+.env
+.env.local
+next-env.d.ts
+*.tsbuildinfo
+# Your personal log. Remove this line if you want to commit it.
+data/*.json
+
+# npm run screenshots output
+screenshots/
