@@ -1,4 +1,5 @@
 import { requireUserId } from "@/server/auth";
+import { requireAccess } from "@/server/services/billing-service";
 import { updateGoalsInputSchema } from "@/lib/schemas";
 import { ok, readJson, toErrorResponse } from "@/server/http";
 import { goalsRepository } from "@/server/repositories/goals-repository";
@@ -17,6 +18,7 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const userId = await requireUserId();
+    await requireAccess(userId);
     const { goals } = updateGoalsInputSchema.parse(await readJson(request));
     return ok({ goals: await goalsRepository.save(userId, goals) });
   } catch (err) {

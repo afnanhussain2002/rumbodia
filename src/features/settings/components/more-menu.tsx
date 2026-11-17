@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Database, Settings, Target } from "lucide-react";
+import { ChevronRight, CreditCard, Database, Settings, Target } from "lucide-react";
 import { useIsDesktop } from "@/hooks/use-media-query";
 import { Card } from "@/components/ui/card";
 import { AboutCard } from "@/features/settings/components/settings-form";
@@ -12,6 +12,7 @@ const ROWS = [
   { href: "/app/more/goals", label: "Goals", hint: "What Gemini scores against", icon: Target },
   { href: "/app/more/settings", label: "Settings", hint: "Theme, week start, parts of the day", icon: Settings },
   { href: "/app/more/data", label: "Your data", hint: "Export, import, delete", icon: Database },
+  { href: "/app/billing", label: "Plan & billing", hint: "Your plan, upgrade, invoices", icon: CreditCard },
 ];
 
 export function MoreMenu() {

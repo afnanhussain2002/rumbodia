@@ -1,4 +1,4 @@
-import { BarChart3, CalendarDays, Database, LayoutGrid, List, Settings, Target } from "lucide-react";
+import { BarChart3, CalendarDays, CreditCard, Database, LayoutGrid, List, Settings, Target } from "lucide-react";
 
 export const MONTH_TABS = ["/app/stats", "/app/entries", "/app/calendar"] as const;
 
@@ -20,6 +20,7 @@ export const SIDEBAR_ITEMS = [
   { href: "/app/more/goals", label: "Goals", icon: Target },
   { href: "/app/more/settings", label: "Settings", icon: Settings },
   { href: "/app/more/data", label: "Your data", icon: Database },
+  { href: "/app/billing", label: "Plan & billing", icon: CreditCard },
 ] as const;
 
 export const PAGE_TITLES: Record<string, string> = {
@@ -27,4 +28,5 @@ export const PAGE_TITLES: Record<string, string> = {
   "/app/more/goals": "Goals",
   "/app/more/settings": "Settings",
   "/app/more/data": "Your data",
+  "/app/billing": "Plan & billing",
 };

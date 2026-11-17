@@ -1,3 +1,4 @@
+import { Pricing } from "@/features/landing/components/pricing-section";
 import { Footer, Hero, HowItWorks, LevelsShowcase, PrivacyNote } from "@/features/landing/components/landing-sections";
 
 export default function LandingPage() {
@@ -7,6 +8,7 @@ export default function LandingPage() {
       <main>
         <HowItWorks />
         <LevelsShowcase />
+        <Pricing />
         <PrivacyNote />
       </main>
       <Footer />

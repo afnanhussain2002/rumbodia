@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/toast";
 
 /** The Rumbodia mark as a standalone SVG (for drawing on the share canvas). */
 function logoSvg(brand: string, onBrand: string) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="96" height="96"><rect x="1" y="1" width="46" height="46" rx="13" fill="${brand}"/><g fill="none" stroke="${onBrand}" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 36V12h7.5a6.5 6.5 0 0 1 0 13H13"/><path d="M19.5 25l6.5 10 12-13.5"/><path d="M32.5 21.5H38.5V27.5"/></g></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="96" height="96"><rect x="1" y="1" width="46" height="46" rx="13" fill="${brand}"/><circle cx="16.5" cy="18.5" r="3.1" fill="${onBrand}"/><circle cx="29.5" cy="18.5" r="3.1" fill="${onBrand}"/><g fill="none" stroke="${onBrand}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 26.5C14.5 33.5 23.5 36.5 30 32L37 25"/><path d="M31 25H37V31"/></g></svg>`;
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {

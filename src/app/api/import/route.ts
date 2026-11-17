@@ -1,4 +1,5 @@
 import { requireUserId } from "@/server/auth";
+import { requireAccess } from "@/server/services/billing-service";
 import { importInputSchema } from "@/lib/schemas";
 import { ok, readJson, toErrorResponse } from "@/server/http";
 import { importData } from "@/server/services/data-service";
@@ -8,6 +9,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     const userId = await requireUserId();
+    await requireAccess(userId);
     const input = importInputSchema.parse(await readJson(request));
     return ok({ imported: await importData(userId, input) });
   } catch (err) {

@@ -1,3 +1,4 @@
+import type { BillingStatus, PlanId } from "@/lib/billing";
 import type {
   ApiErrorBody,
   Entry,
@@ -48,10 +49,15 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     const err = body && typeof body === "object" && "error" in body ? body.error : null;
     // Session expired or signed out in another tab: go sign in again.
     if (res.status === 401 && typeof window !== "undefined") window.location.assign("/sign-in");
+    // Trial over: let the billing hook refresh so the paywall shows.
+    if (res.status === 402 && typeof window !== "undefined") window.dispatchEvent(new Event(PAYWALL_EVENT));
     throw new ApiError(err?.message ?? `Request failed (${res.status}).`, res.status, err?.code);
   }
   return body as T;
 }
+
+/** Fired when a request is refused because the trial has ended. */
+export const PAYWALL_EVENT = "rumbodia:paywall";
 
 const json = (method: string, data: unknown): RequestInit => ({ method, body: JSON.stringify(data) });
 
@@ -127,6 +133,16 @@ export const api = {
   deleteAllData: () => request<{ ok: true }>("/api/data", json("DELETE", { confirm: "DELETE" })),
 
   getMeta: () => request<Meta>("/api/meta"),
+
+  getBilling: () => request<{ billing: BillingStatus }>("/api/billing").then((r) => r.billing),
+
+  startCheckout: (plan: PlanId) =>
+    request<{ url: string }>("/api/billing/checkout", json("POST", { plan })).then((r) => r.url),
+
+  openBillingPortal: () => request<{ url: string }>("/api/billing/portal", { method: "POST" }).then((r) => r.url),
+
+  confirmCheckout: (sessionId: string) =>
+    request<{ billing: BillingStatus }>("/api/billing/confirm", json("POST", { sessionId })).then((r) => r.billing),
 
   exportUrl: (format: "json" | "csv") => `/api/export?format=${format}`,
 };

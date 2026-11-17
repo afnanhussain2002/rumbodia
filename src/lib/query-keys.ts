@@ -8,4 +8,5 @@ export const queryKeys = {
   insight: (weekStart: string) => ["insight", weekStart] as const,
   allInsights: ["insight"] as const,
   meta: ["meta"] as const,
+  billing: ["billing"] as const,
 };

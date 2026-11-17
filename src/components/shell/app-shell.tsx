@@ -18,6 +18,8 @@ import { SearchPanel } from "@/features/entries/components/search-panel";
 import { NewUpdateSheet } from "@/features/new-update/components/new-update-sheet";
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { useReminderRunner } from "@/features/settings/hooks/use-reminders";
+import { isPaywalled, Paywall, TrialBanner } from "@/features/billing/components/paywall";
+import { useBilling } from "@/features/billing/hooks/use-billing";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -27,6 +29,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isDesktop = useIsDesktop();
   const settings = useSettings();
   useReminderRunner(settings.timeOfDayStarts);
+  const billing = useBilling();
+  const expired = billing.data?.state === "expired";
+  const locked = expired && isPaywalled(pathname);
 
   const [newRequest, setNewRequest] = useState<NewUpdateRequest | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -76,7 +81,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const api = useMemo<ShellApi>(
     () => ({
-      openNewUpdate: (request = {}) => setNewRequest(request),
+      openNewUpdate: (request = {}) => (expired ? router.push("/app/billing") : setNewRequest(request)),
       openSearch: () => setSearchOpen(true),
       openDay,
       closeDay,
@@ -84,11 +89,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       chartFocus,
       lastScored,
     }),
-    [openDay, closeDay, chartFocus, lastScored],
+    [openDay, closeDay, chartFocus, lastScored, expired, router],
   );
 
   useKeyboardShortcuts({
-    n: () => setNewRequest({}),
+    n: () => api.openNewUpdate(),
     ArrowLeft: () => monthPage && monthNav.prev(),
     ArrowRight: () => monthPage && monthNav.canGoNext && monthNav.next(),
   });
@@ -104,7 +109,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ShellContext.Provider value={api}>
-      <Sidebar hrefFor={hrefFor} onNew={() => setNewRequest({})} />
+      <Sidebar hrefFor={hrefFor} onNew={() => api.openNewUpdate()} />
       <div className="min-h-[100dvh] lg:pl-[240px] 2xl:pl-[260px]">
         <MonthHeader
           month={monthPage ? monthNav.month : null}
@@ -113,16 +118,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           onPrev={monthNav.prev}
           onNext={monthNav.next}
           onSearch={() => setSearchOpen(true)}
-          onNew={() => setNewRequest({})}
+          onNew={() => api.openNewUpdate()}
         />
         <main
           id="main"
           className="mx-auto w-full max-w-[720px] px-4 pt-4 pb-[calc(64px+env(safe-area-inset-bottom)+32px)] sm:px-6 sm:pt-6 lg:max-w-[1100px] lg:px-8 lg:pb-12 2xl:max-w-[1240px]"
         >
-          {children}
+          <TrialBanner />
+          {locked ? <Paywall /> : children}
         </main>
       </div>
-      <BottomTabBar hrefFor={hrefFor} onNew={() => setNewRequest({})} />
+      <BottomTabBar hrefFor={hrefFor} onNew={() => api.openNewUpdate()} />
 
       <NewUpdateSheet
         request={newRequest}

@@ -1,4 +1,5 @@
 import { requireUserId } from "@/server/auth";
+import { requireAccess } from "@/server/services/billing-service";
 import { createEntryInputSchema, listEntriesQuerySchema } from "@/lib/schemas";
 import { ok, readJson, toErrorResponse } from "@/server/http";
 import { entriesRepository } from "@/server/repositories/entries-repository";
@@ -21,6 +22,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const userId = await requireUserId();
+    await requireAccess(userId);
     const input = createEntryInputSchema.parse(await readJson(request));
     const entry = await createEntry(userId, input, getRequestTimezone(request));
     return ok({ entry }, 201);
