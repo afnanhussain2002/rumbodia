@@ -1,7 +1,7 @@
 import "server-only";
 import { PROMPT_FEELING_COUNT, WEEKLY_MIN_ENTRIES, WEEKLY_REFRESH_COOLDOWN_MS } from "@/lib/constants";
 import { feelingPatterns } from "@/lib/stats/feelings";
-import { generateJson } from "@/lib/gemini/client";
+import { generateStructured } from "@/lib/ai/generate";
 import { buildWeeklyPrompt, WEEKLY_RESPONSE_SCHEMA, WEEKLY_SYSTEM_INSTRUCTION } from "@/lib/gemini/weekly-prompt";
 import { weeklyResultSchema } from "@/lib/schemas";
 import { shiftDayKey } from "@/lib/utils/date";
@@ -49,7 +49,7 @@ async function generate(userId: string, weekStart: string, items: { day: string;
   const env = getEnv();
   const goals = await goalsRepository.list(userId);
   const patterns = feelingPatterns(await entriesRepository.list(userId), PROMPT_FEELING_COUNT);
-  const raw = await generateJson({
+  const { data: raw } = await generateStructured({
     apiKey: env.geminiApiKey,
     model: env.geminiModel,
     systemInstruction: WEEKLY_SYSTEM_INSTRUCTION,

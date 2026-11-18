@@ -21,6 +21,13 @@ export function getEnv(): ServerEnv {
   return { geminiApiKey, geminiModel: getModelName() };
 }
 
+/** OpenAI is an optional backup for when Gemini fails. Null when no key is set. */
+export function getOpenAiEnv(): { apiKey: string; model: string } | null {
+  const apiKey = process.env.OPENAI_API_KEY?.trim().replace(/^["']+|["']+$/g, "");
+  if (!apiKey) return null;
+  return { apiKey, model: process.env.OPENAI_MODEL?.trim() || "gpt-5-mini" };
+}
+
 /** The model name does not need the API key (shown in Settings / About). */
 export function getModelName(): string {
   return process.env.GEMINI_MODEL?.trim() || DEFAULT_GEMINI_MODEL;

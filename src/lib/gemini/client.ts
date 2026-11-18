@@ -4,10 +4,17 @@ import { AppError } from "@/server/http";
 
 const BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models";
 
-const FALLBACK_MODEL = "gemini-2.5-flash";
+/**
+ * Tried in order when the configured model is overloaded (503) or unavailable (404).
+ * "gemini-flash-latest" is Google's alias for the current Flash model, so it doesn't go stale
+ * the way a pinned name does (gemini-2.5-flash was retired for new keys).
+ */
+const FALLBACK_MODELS = ["gemini-flash-latest", "gemini-3.5-flash-lite"];
 const MAX_ATTEMPTS = 3;
 const RETRY_BASE_DELAY_MS = 1000;
 const RETRYABLE_STATUSES = new Set([500, 503]);
+/** Try the next model on these, without retrying the same one. */
+const NEXT_MODEL_STATUSES = new Set([404]);
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -39,7 +46,7 @@ export interface GenerateJsonOptions {
  * Uses plain fetch so there is no SDK to keep in sync with model changes.
  * The API key stays on the server and is never sent to the browser.
  */
-export async function generateJson({
+export async function generateGeminiJson({
   apiKey,
   model,
   systemInstruction,
@@ -57,9 +64,11 @@ export async function generateJson({
 
   let res!: Response;
   let body: GeminiResponse = {};
-  const models = model === FALLBACK_MODEL ? [model] : [model, FALLBACK_MODEL];
+  /** The configured model's own failure: what we report if every model fails. */
+  let primaryFailure: { status: number; message?: string } | null = null;
+  const models = [...new Set([model, ...FALLBACK_MODELS])];
 
-  // Overload (503) is usually brief: retry with backoff, then try the fallback model.
+  // Overload (503) is usually brief: retry with backoff, then move down the fallback list.
   outer: for (const currentModel of models) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
       if (attempt > 0) await sleep(RETRY_BASE_DELAY_MS * 2 ** (attempt - 1));
@@ -78,12 +87,20 @@ export async function generateJson({
       }
 
       body = (await res.json().catch(() => ({}))) as GeminiResponse;
+      if (res.ok) break outer;
+      if (NEXT_MODEL_STATUSES.has(res.status)) break;
       if (!RETRYABLE_STATUSES.has(res.status)) break outer;
+    }
+    if (!res.ok) {
+      console.warn(`[gemini] ${currentModel} failed with ${res.status}: ${body.error?.message ?? ""}`);
+      if (currentModel === model) primaryFailure = { status: res.status, message: body.error?.message };
     }
   }
 
   if (!res.ok) {
-    throw mapGeminiHttpError(res.status, body.error?.message);
+    // Report why the configured model failed (e.g. "busy"), not a fallback's unrelated error.
+    const failure = primaryFailure ?? { status: res.status, message: body.error?.message };
+    throw mapGeminiHttpError(failure.status, failure.message);
   }
 
   if (body.promptFeedback?.blockReason) {
@@ -113,17 +130,20 @@ export async function generateJson({
 
 function mapGeminiHttpError(status: number, message?: string): AppError {
   if (status === 400 && message && /api key/i.test(message)) {
-    return new AppError("Gemini rejected your API key. Check GEMINI_API_KEY in .env.local.", 401, "gemini_bad_key");
+    return new AppError("Gemini rejected your API key. Check GEMINI_API_KEY.", 401, "gemini_bad_key");
   }
   if (status === 401 || status === 403) {
-    return new AppError("Gemini rejected your API key. Check GEMINI_API_KEY in .env.local.", 401, "gemini_bad_key");
+    return new AppError("Gemini rejected your API key. Check GEMINI_API_KEY.", 401, "gemini_bad_key");
   }
   if (status === 404) {
     return new AppError(
-      "Gemini does not know that model name. Check GEMINI_MODEL in .env.local.",
+      "Gemini does not know that model name. Check GEMINI_MODEL.",
       502,
       "gemini_bad_model",
     );
+  }
+  if (status === 500 || status === 503) {
+    return new AppError("Gemini is very busy right now. Wait a minute and try again.", 503, "gemini_busy");
   }
   if (status === 429) {
     return new AppError("Gemini rate limit reached. Wait a minute and try again.", 429, "gemini_rate_limited");

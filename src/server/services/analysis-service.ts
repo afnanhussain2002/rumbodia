@@ -1,5 +1,5 @@
 import "server-only";
-import { generateJson } from "@/lib/gemini/client";
+import { generateStructured } from "@/lib/ai/generate";
 import { buildPrompt, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION, type PromptInput } from "@/lib/gemini/prompt";
 import { analysisResultSchema, type AnalysisResult } from "@/lib/schemas";
 import { AppError } from "@/server/http";
@@ -13,7 +13,7 @@ export interface AnalysisOutput extends AnalysisResult {
 export async function analyzeUpdate(input: PromptInput): Promise<AnalysisOutput> {
   const env = getEnv();
 
-  const raw = await generateJson({
+  const { data: raw, model } = await generateStructured({
     apiKey: env.geminiApiKey,
     model: env.geminiModel,
     systemInstruction: SYSTEM_INSTRUCTION,
@@ -25,5 +25,5 @@ export async function analyzeUpdate(input: PromptInput): Promise<AnalysisOutput>
   if (!parsed.success) {
     throw new AppError("Gemini's answer was not in the expected shape. Try again.", 502, "gemini_bad_shape");
   }
-  return { ...parsed.data, model: env.geminiModel };
+  return { ...parsed.data, model };
 }
