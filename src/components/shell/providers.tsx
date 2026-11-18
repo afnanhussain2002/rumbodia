@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastProvider } from "@/components/ui/toast";
 import { applyTheme, useSettings } from "@/features/settings/hooks/use-settings";
+import { MoodProvider } from "@/features/theme/mood-provider";
 
 /** Keeps <html data-theme> in sync with the saved setting. */
 function ThemeSync() {
@@ -28,6 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={client}>
       <ToastProvider>
         <ThemeSync />
+        <MoodProvider />
         {children}
       </ToastProvider>
     </QueryClientProvider>

@@ -1,106 +1,209 @@
 @import "tailwindcss";
 
-/* ---------- Tokens (light) ---------- */
+/*
+ * Rumbodia "playful" tokens (see RUMBODIA_PLAYFUL_DESIGN.md).
+ *
+ * Two layers:
+ *  1. Fixed tokens: cream, ink, cards, lines, and the five LEVEL colors (charts and calendar never change).
+ *  2. MOOD tokens: the app chrome (buttons, active nav, tints, background blobs) follows the current level.
+ *     <html data-mood="rising"> sets the whole app; <div data-mood="falling"> overrides inside one card.
+ *
+ * Legacy names (--brand, --brand-soft, --on-brand…) now point at the mood tokens, so every existing
+ * component follows the mood without being rewritten.
+ */
+
+/* Registered so the mood colors themselves cross-fade (600ms) when the mood changes. */
+@property --mood-500 { syntax: "<color>"; inherits: true; initial-value: #f2c230; }
+@property --mood-600 { syntax: "<color>"; inherits: true; initial-value: #d9a81a; }
+@property --mood-100 { syntax: "<color>"; inherits: true; initial-value: #fcf1c7; }
+@property --mood-50 { syntax: "<color>"; inherits: true; initial-value: #fef9e7; }
+@property --mood-blob { syntax: "<color>"; inherits: true; initial-value: #f9e7a6; }
+@property --mood-strong { syntax: "<color>"; inherits: true; initial-value: #7a5b00; }
+
+/* ---------- Mood palettes (light values) ---------- */
+:root,
+[data-mood="steady"] {
+  --m-500: #f2c230; --m-600: #d9a81a; --m-100: #fcf1c7; --m-50: #fef9e7; --m-blob: #f9e7a6;
+  --m-ink: #3a2c00; --m-strong: #7a5b00; --m-strong-dark: #f5cb45;
+}
+[data-mood="soaring"] {
+  --m-500: #3fa34d; --m-600: #2f8a3c; --m-100: #ddf2df; --m-50: #f1faf0; --m-blob: #cfebd2;
+  --m-ink: #0f2e14; --m-strong: #2b7a36; --m-strong-dark: #6fd07d;
+}
+[data-mood="rising"] {
+  /* Spec #3B82F6 / #2563EB nudged so white text passes 4.5:1. */
+  --m-500: #2f6fe4; --m-600: #2259c9; --m-100: #dceafe; --m-50: #eff5ff; --m-blob: #cfe0fc;
+  --m-ink: #ffffff; --m-strong: #1d4ed8; --m-strong-dark: #8ab6ff;
+}
+[data-mood="slipping"] {
+  --m-500: #f28c28; --m-600: #d9731a; --m-100: #fde5cc; --m-50: #fef4ea; --m-blob: #fbd6b0;
+  --m-ink: #2e1600; --m-strong: #a34a05; --m-strong-dark: #ffb070;
+}
+[data-mood="falling"] {
+  /* Spec #E5484D nudged so white text passes 4.5:1. */
+  --m-500: #d7383e; --m-600: #bd2a30; --m-100: #fbdcdd; --m-50: #fdf0f0; --m-blob: #f8c6c8;
+  --m-ink: #ffffff; --m-strong: #b42a30; --m-strong-dark: #ff8a8f;
+}
+
+/* ---------- Light theme ---------- */
 :root {
   color-scheme: light;
 
-  --brand: #13a38b;
-  --brand-strong: #0e8572;
-  --brand-soft: #e3f6f2;
-  --bg: #f2f3f7;
-  --card: #ffffff;
-  --ink: #16181d;
-  --ink-soft: #6b7280;
-  --line: #e5e7eb;
-  --empty: #ecedf2;
-  --on-brand: #ffffff;
-  --danger: #e0394a;
-  --danger-soft: #fde8ea;
-  --focus: #2563eb;
+  --cream: #fbf8ee;
+  --ink-fixed: #1c1c1a;
+  --face-ink: #1c1c1a;
+  --limb-ink: #1c1c1a;
+  --bubble: #fffbea;
+  --hero: #1c1c1a;
+  --hero-ink: #fbf8ee;
+  --outline: #1c1c1a;
 
-  --level-soaring: #10a37f;
-  --level-rising: #7cb518;
-  --level-steady: #3b8fd9;
-  --level-slipping: #f08c1a;
-  --level-falling: #e0394a;
+  --bg: var(--cream);
+  --card: #ffffff;
+  --ink: #1c1c1a;
+  --ink-soft: #5e5e57;
+  --line: #e8e4d6;
+  --empty: #efebdd;
+  --danger: #d7383e;
+  --danger-soft: #fbdcdd;
+  --focus: #1c1c1a;
+
+  --level-soaring: #3fa34d;
+  --level-rising: #2f6fe4;
+  --level-steady: #f2c230;
+  --level-slipping: #f28c28;
+  --level-falling: #d7383e;
 
   /* Contrast-safe text variants (>= 4.5:1 on --card). */
-  --level-soaring-text: #0b7a5f;
-  --level-rising-text: #5e8c10;
-  --level-steady-text: #2471b8;
-  --level-slipping-text: #b8650a;
-  --level-falling-text: #c42536;
+  --level-soaring-text: #2b7a36;
+  --level-rising-text: #1d4ed8;
+  --level-steady-text: #7a5b00;
+  --level-slipping-text: #a34a05;
+  --level-falling-text: #b42a30;
 
-  --card-shadow: 0 1px 2px rgb(16 24 40 / 0.04), 0 4px 16px rgb(16 24 40 / 0.06);
-  --card-border: transparent;
-  --overlay: rgb(15 18 22 / 0.45);
-  --amber: #d99a06;
+  /* Text on a solid level color. */
+  --level-soaring-ink: #0f2e14;
+  --level-rising-ink: #ffffff;
+  --level-steady-ink: #3a2c00;
+  --level-slipping-ink: #2e1600;
+  --level-falling-ink: #ffffff;
+
+  --card-shadow: 0 2px 0 rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
+  --card-border: #efebdd;
+  --overlay: rgb(28 28 26 / 0.45);
+  --amber: #c98a00;
 }
 
-/* ---------- Tokens (dark): system preference, unless forced light ---------- */
+/* Mood → semantic tokens. Declared on every [data-mood] too, so a local override recomputes them. */
+:root,
+[data-mood] {
+  --mood-500: var(--m-500);
+  --mood-600: var(--m-600);
+  --mood-100: var(--m-100);
+  --mood-50: var(--m-50);
+  --mood-blob: var(--m-blob);
+  --mood-ink: var(--m-ink);
+  --mood-strong: var(--m-strong);
+
+  --brand: var(--mood-500);
+  --brand-strong: var(--mood-strong);
+  --brand-soft: var(--mood-100);
+  --on-brand: var(--mood-ink);
+}
+
+/* ---------- Dark theme ---------- */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --brand: #22c3a6;
-    --brand-strong: #4fd8bf;
-    --brand-soft: #123b35;
-    --bg: #0f1216;
-    --card: #191d23;
-    --ink: #eceef2;
-    --ink-soft: #9aa3af;
-    --line: #2a3038;
-    --empty: #252a32;
-    --on-brand: #0f1216;
-    --danger: #ff6b78;
-    --danger-soft: #3a1a1f;
-    --focus: #7aa7ff;
-    --level-soaring: #2dd4a7;
-    --level-rising: #a3d94b;
-    --level-steady: #6ab0f0;
-    --level-slipping: #ffad4d;
-    --level-falling: #ff6b78;
-    --level-soaring-text: #2dd4a7;
-    --level-rising-text: #a3d94b;
-    --level-steady-text: #6ab0f0;
-    --level-slipping-text: #ffad4d;
-    --level-falling-text: #ff6b78;
+    --bg: #161614;
+    --card: #22221f;
+    --ink: #f3f0e6;
+    --ink-soft: #a8a69c;
+    --line: #34342f;
+    --empty: #2c2c28;
+    --bubble: #2a2a26;
+    --hero: #0e0e0d;
+    --outline: #f3f0e6;
+  --limb-ink: #d8d4c8;
+    --limb-ink: #d8d4c8;
+    --danger: #ff6369;
+    --danger-soft: #3a1a1c;
+    --focus: #f3f0e6;
+    --level-soaring: #4cc25c;
+    --level-rising: #5b9bff;
+    --level-steady: #f5cb45;
+    --level-slipping: #ff9f43;
+    --level-falling: #ff6369;
+    --level-soaring-text: #6fd07d;
+    --level-rising-text: #8ab6ff;
+    --level-steady-text: #f5cb45;
+    --level-slipping-text: #ffb070;
+    --level-falling-text: #ff8a8f;
+    --level-rising-ink: #0b1a33;
+    --level-falling-ink: #2b0607;
     --card-shadow: none;
-    --card-border: #2a3038;
+    --card-border: #34342f;
     --overlay: rgb(0 0 0 / 0.6);
     --amber: #fbbf24;
   }
+  :root:not([data-theme="light"]),
+  :root:not([data-theme="light"]) [data-mood] {
+    --mood-100: color-mix(in srgb, var(--m-500) 22%, #22221f);
+    --mood-50: color-mix(in srgb, var(--m-500) 12%, #161614);
+    --mood-blob: color-mix(in srgb, var(--m-500) 16%, #161614);
+    --mood-strong: var(--m-strong-dark);
+  }
 }
 
-/* ---------- Tokens (dark): forced in Settings ---------- */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --brand: #22c3a6;
-  --brand-strong: #4fd8bf;
-  --brand-soft: #123b35;
-  --bg: #0f1216;
-  --card: #191d23;
-  --ink: #eceef2;
-  --ink-soft: #9aa3af;
-  --line: #2a3038;
-  --empty: #252a32;
-  --on-brand: #0f1216;
-  --danger: #ff6b78;
-  --danger-soft: #3a1a1f;
-  --focus: #7aa7ff;
-  --level-soaring: #2dd4a7;
-  --level-rising: #a3d94b;
-  --level-steady: #6ab0f0;
-  --level-slipping: #ffad4d;
-  --level-falling: #ff6b78;
-  --level-soaring-text: #2dd4a7;
-  --level-rising-text: #a3d94b;
-  --level-steady-text: #6ab0f0;
-  --level-slipping-text: #ffad4d;
-  --level-falling-text: #ff6b78;
+  --bg: #161614;
+  --card: #22221f;
+  --ink: #f3f0e6;
+  --ink-soft: #a8a69c;
+  --line: #34342f;
+  --empty: #2c2c28;
+  --bubble: #2a2a26;
+  --hero: #0e0e0d;
+  --outline: #f3f0e6;
+  --danger: #ff6369;
+  --danger-soft: #3a1a1c;
+  --focus: #f3f0e6;
+  --level-soaring: #4cc25c;
+  --level-rising: #5b9bff;
+  --level-steady: #f5cb45;
+  --level-slipping: #ff9f43;
+  --level-falling: #ff6369;
+  --level-soaring-text: #6fd07d;
+  --level-rising-text: #8ab6ff;
+  --level-steady-text: #f5cb45;
+  --level-slipping-text: #ffb070;
+  --level-falling-text: #ff8a8f;
+  --level-rising-ink: #0b1a33;
+  --level-falling-ink: #2b0607;
   --card-shadow: none;
-  --card-border: #2a3038;
+  --card-border: #34342f;
   --overlay: rgb(0 0 0 / 0.6);
   --amber: #fbbf24;
+}
+:root[data-theme="dark"],
+:root[data-theme="dark"] [data-mood] {
+  --mood-100: color-mix(in srgb, var(--m-500) 22%, #22221f);
+  --mood-50: color-mix(in srgb, var(--m-500) 12%, #161614);
+  --mood-blob: color-mix(in srgb, var(--m-500) 16%, #161614);
+  --mood-strong: var(--m-strong-dark);
+}
+
+/* Smooth mood change: the registered colors themselves interpolate. */
+:root,
+[data-mood] {
+  transition:
+    --mood-500 0.6s ease,
+    --mood-600 0.6s ease,
+    --mood-100 0.6s ease,
+    --mood-50 0.6s ease,
+    --mood-blob 0.6s ease,
+    --mood-strong 0.6s ease;
 }
 
 @theme inline {
@@ -124,13 +227,31 @@
   --color-level-slipping: var(--level-slipping);
   --color-level-falling: var(--level-falling);
 
+  --color-cream: var(--cream);
+  --color-ink-fixed: var(--ink-fixed);
+  --color-outline: var(--outline);
+  --color-bubble: var(--bubble);
+  --color-hero: var(--hero);
+  --color-hero-ink: var(--hero-ink);
+  --color-mood-50: var(--mood-50);
+  --color-mood-100: var(--mood-100);
+  --color-mood-500: var(--mood-500);
+  --color-mood-600: var(--mood-600);
+  --color-mood-ink: var(--mood-ink);
+  --color-mood-strong: var(--mood-strong);
+  --color-mood-blob: var(--mood-blob);
+
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-gaegu), "Patrick Hand", "Comic Sans MS", cursive;
 
-  --radius-card: 20px;
-  --radius-control: 14px;
+  --radius-card: 24px;
+  --radius-control: 16px;
+  --radius-blob: 32px;
 
   --shadow-card: var(--card-shadow);
+  --shadow-pop: 4px 4px 0 var(--outline);
+  --shadow-pop-sm: 3px 3px 0 var(--outline);
 
   --breakpoint-2xl: 90rem;
 }
@@ -281,4 +402,232 @@ mark {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ================= Playful layer ================= */
+
+.font-hand {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* Speech bubble: cream, 2px outline, handwritten caps. The tail is a rotated square. */
+.bubble {
+  position: relative;
+  background: var(--bubble);
+  color: var(--ink);
+  border: 2px solid var(--outline);
+  border-radius: 22px;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+/* Only two borders, so it reads as a "V". Rotation (inline) points it: 45° down, 135° left, -45° right. */
+.bubble-tail {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: var(--bubble);
+  border-right: 2px solid var(--outline);
+  border-bottom: 2px solid var(--outline);
+}
+
+/* Sticker: outlined label with a hard offset shadow. */
+.sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  box-shadow: var(--shadow-pop-sm);
+  font-family: var(--font-hand);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Main CTAs: hard shadow that collapses on press. */
+.btn-pop {
+  border: 2px solid var(--outline);
+  box-shadow: var(--shadow-pop-sm);
+  transition: transform 80ms ease, box-shadow 80ms ease, background-color 150ms ease;
+}
+.btn-pop:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--outline);
+}
+.btn-pop:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--outline);
+}
+
+/* Card hover lift (opt-in). */
+.lift {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.04), 0 14px 32px rgb(0 0 0 / 0.1);
+}
+
+/* Dark hero panel (landing, empty Today, paywall). */
+.ink-hero {
+  background: var(--hero);
+  color: var(--hero-ink);
+  border-radius: 32px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ---------- Rumbo mascot motion ---------- */
+.rumbo-body,
+.rumbo-eyes,
+.rumbo-fx {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.rumbo-eyes {
+  transform-origin: 50% 50%;
+}
+
+.rumbo-anim .rumbo-eyes {
+  animation: rumbo-blink 5s infinite;
+  animation-delay: var(--blink-delay, 0s);
+}
+.rumbo-anim.rumbo-soaring .rumbo-body { animation: rumbo-bounce 1.1s cubic-bezier(0.3, 0, 0.4, 1) infinite; }
+.rumbo-anim.rumbo-rising .rumbo-body { animation: rumbo-hop 1.8s ease-in-out infinite; }
+.rumbo-anim.rumbo-steady .rumbo-body { animation: rumbo-breathe 3.2s ease-in-out infinite; }
+.rumbo-anim.rumbo-slipping .rumbo-body { animation: rumbo-wobble 2.6s ease-in-out infinite; transform-origin: 50% 90%; }
+.rumbo-anim.rumbo-falling .rumbo-body { animation: rumbo-sag 3.6s ease-in-out infinite; }
+.rumbo-anim .rumbo-sparkle { animation: rumbo-sparkle 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.rumbo-anim .rumbo-sparkle:nth-of-type(2) { animation-delay: 0.5s; }
+.rumbo-anim .rumbo-sparkle:nth-of-type(3) { animation-delay: 1s; }
+.rumbo-anim .rumbo-drop { animation: rumbo-drop 1.2s linear infinite; }
+.rumbo-anim .rumbo-drop:nth-of-type(2) { animation-delay: 0.4s; }
+.rumbo-anim .rumbo-drop:nth-of-type(3) { animation-delay: 0.8s; }
+
+/* Hover-only idle (levels strip on the landing page). */
+.rumbo-hover .rumbo-body { animation-play-state: paused; }
+.group:hover .rumbo-hover .rumbo-body,
+.group:focus-within .rumbo-hover .rumbo-body { animation-play-state: running; }
+
+@keyframes rumbo-blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+@keyframes rumbo-bounce {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  15% { transform: translateY(0) scale(1.06, 0.92); }
+  45% { transform: translateY(-9%) scale(0.96, 1.05); }
+  75% { transform: translateY(0) scale(1.03, 0.96); }
+}
+@keyframes rumbo-hop {
+  0%, 60%, 100% { transform: translateY(0); }
+  75% { transform: translateY(-5%); }
+}
+@keyframes rumbo-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+@keyframes rumbo-wobble {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+@keyframes rumbo-sag {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.04, 0.95); }
+}
+@keyframes rumbo-sparkle {
+  0%, 100% { transform: scale(0.4); opacity: 0; }
+  50% { transform: scale(1); opacity: 1; }
+}
+@keyframes rumbo-drop {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+
+/* "Thinking" morph while Gemini scores. */
+@keyframes rumbo-think {
+  0% { transform: scale(0.7) rotate(-8deg); opacity: 0; }
+  30% { transform: scale(1.06) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+.animate-think { animation: rumbo-think 420ms cubic-bezier(0.2, 0.8, 0.3, 1.2) both; }
+
+/* Result reveal: spring bounce 0.6 → 1.1 → 1. */
+@keyframes rumbo-reveal {
+  0% { transform: scale(0.6); opacity: 0; }
+  55% { transform: scale(1.1); opacity: 1; }
+  80% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+.animate-reveal { animation: rumbo-reveal 700ms cubic-bezier(0.2, 0.8, 0.3, 1.2) both; }
+
+/* Rain cloud that clears into a sun (supportive bad-day moment). */
+@keyframes cloud-away {
+  0%, 70% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.9); }
+}
+@keyframes sun-in {
+  0%, 65% { opacity: 0; transform: scale(0.4) rotate(-40deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+.animate-cloud-away { animation: cloud-away 2.6s ease forwards; }
+.animate-sun-in { animation: sun-in 2.8s cubic-bezier(0.2, 0.8, 0.3, 1.2) forwards; transform-box: fill-box; transform-origin: center; }
+
+/* Confetti pieces fall with gravity-ish easing. */
+@keyframes confetti-fall {
+  0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translate3d(var(--dx, 0px), 105vh, 0) rotate(var(--spin, 540deg)); opacity: 0; }
+}
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  animation: confetti-fall var(--dur, 1.5s) cubic-bezier(0.25, 0.4, 0.55, 1) var(--delay, 0s) forwards;
+  will-change: transform;
+}
+
+/* Background blobs drift slowly (60s loop). */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) rotate(var(--r, 12deg)); }
+  50% { transform: translate(24px, -18px) rotate(calc(var(--r, 12deg) + 6deg)); }
+}
+.blob {
+  position: absolute;
+  border-radius: 28%;
+  background: var(--mood-blob);
+  animation: blob-drift 60s ease-in-out infinite;
+}
+
+/* Count-up numbers keep their width. */
+.score-xl {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(56px, 7vw + 24px, 84px);
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+/* In-app "Mascot animations" setting. */
+[data-motion="off"] .rumbo-anim *,
+[data-motion="off"] .blob,
+[data-motion="reduced"] .rumbo-anim .rumbo-body,
+[data-motion="reduced"] .rumbo-anim .rumbo-sparkle,
+[data-motion="reduced"] .rumbo-anim .rumbo-drop,
+[data-motion="reduced"] .blob {
+  animation: none !important;
+}
+[data-motion="off"] .confetti-layer,
+[data-motion="reduced"] .confetti-layer {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti-layer { display: none; }
+  :root, [data-mood] { transition: none; }
 }

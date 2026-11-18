@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rumbodia",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "rumbodia"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  },
+  "vars": {
+    "APP_URL": "https://rumbodia.site",
+    // Who can open /app/admin (comma separated). Only a verified email on the Clerk account counts.
+    "ADMIN_EMAILS": "afnanhussain2022@gmail.com"
+  },
+  "routes": [
+    { "pattern": "rumbodia.site", "custom_domain": true },
+    { "pattern": "www.rumbodia.site", "custom_domain": true }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

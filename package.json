@@ -11,10 +11,15 @@
     "test:watch": "vitest",
     "icons": "node scripts/generate-icons.mjs",
     "screenshots": "node scripts/screenshots.mjs",
-    "stripe:setup": "node --env-file=.env scripts/stripe-setup.mjs"
+    "stripe:setup": "node --env-file=.env scripts/stripe-setup.mjs",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "node scripts/cf-deploy.mjs",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.10.0",
+    "@opennextjs/cloudflare": "^1.20.17",
     "@tanstack/react-query": "^5.107.1",
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.70.0",
@@ -33,6 +38,7 @@
     "@types/react-dom": "^19.3.0",
     "tailwindcss": "^4.3.4",
     "typescript": "^5.9.0",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "wrangler": "^4.164.0"
   }
 }

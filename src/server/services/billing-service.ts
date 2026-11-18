@@ -93,8 +93,9 @@ async function ensureCustomer(doc: BillingDoc): Promise<string> {
 export async function createCheckoutSession(userId: string, plan: PlanId, origin: string): Promise<string> {
   const doc = await loadDoc(userId);
   const status = toStatus(doc);
-  if (status.plan === "lifetime") throw new AppError("You already have lifetime access.", 409, "already_lifetime");
-  if (PLANS[plan].recurring && status.state === "active") {
+  // Access given by an admin never blocks a real purchase.
+  if (status.plan === "lifetime" && !status.granted) throw new AppError("You already have lifetime access.", 409, "already_lifetime");
+  if (PLANS[plan].recurring && status.state === "active" && !status.granted) {
     throw new AppError("You already have a plan. Use Manage billing to switch or cancel.", 409, "already_subscribed");
   }
 

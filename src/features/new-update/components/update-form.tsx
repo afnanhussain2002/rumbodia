@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ChevronDown, CircleAlert, Loader2 } from "lucide-react";
+import { ChevronDown, CircleAlert } from "lucide-react";
 import type { TimeOfDay } from "@/types";
 import { MAX_UPDATE_LENGTH, TIME_OF_DAY_LABELS, TIMES_OF_DAY } from "@/lib/constants";
 import { cn } from "@/lib/utils/cn";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { FeelingsInput } from "@/features/new-update/components/feelings-input";
 import { continueNumberedList } from "@/features/new-update/components/numbered-list";
+import { ThinkingRumbo } from "@/features/mascot/thinking-rumbo";
 
 interface UpdateFormProps {
   text: string;
@@ -84,8 +85,15 @@ export function UpdateForm({
         if (!empty && !submitting) onSubmit();
       }}
     >
-      <div className="flex min-h-0 flex-1 flex-col gap-4 pt-1">
-        <p className="font-display text-[22px] font-bold">{isEdit ? "Edit your update" : "¡Hola! How did it go?"}</p>
+      <div className="relative flex min-h-0 flex-1 flex-col gap-4 pt-1">
+        {submitting && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[20px] bg-card/85 backdrop-blur-[2px] animate-fade-in">
+            <ThinkingRumbo size={130} />
+          </div>
+        )}
+        <p className="font-display text-[26px] leading-tight font-extrabold tracking-[-0.01em]">
+          {isEdit ? "Edit your update" : "¡Hola! How did it go?"}
+        </p>
 
         <SegmentedControl
           label="Time of day"
@@ -112,8 +120,8 @@ export function UpdateForm({
           placeholder={"1. Ran 1 km, did 5 push-ups\n2. Talked with 2 customers\n3. Got 0 new users today"}
           aria-describedby="update-hint"
           className={cn(
-            "min-h-[180px] w-full flex-1 resize-none rounded-[14px] border border-line bg-bg/60 p-4 text-[16px] leading-relaxed text-ink",
-            "placeholder:text-ink-soft/80 focus:border-brand focus:outline-none focus-visible:outline-2 focus-visible:outline-focus",
+            "min-h-[180px] w-full flex-1 resize-none rounded-[20px] border-2 border-line bg-bg/60 p-4 text-[16px] leading-relaxed text-ink",
+            "placeholder:text-ink-soft/80 focus:border-mood-500 focus:outline-none",
             "sm:max-h-[50dvh] sm:flex-none [field-sizing:content] sm:min-h-[calc(8lh+2rem)]",
             submitting && "opacity-70",
           )}
@@ -180,17 +188,16 @@ export function UpdateForm({
 
       <div className="sticky bottom-0 -mx-4 mt-4 bg-card px-4 pt-2 pb-1 sm:-mx-5 sm:px-5">
         {error && (
-          <div role="alert" className="mb-3 flex items-start gap-2 rounded-[14px] bg-danger-soft p-3 text-[15px] text-danger">
+          <div role="alert" className="mb-3 flex items-start gap-2 rounded-[18px] bg-danger-soft p-3 text-[15px] text-danger">
             <CircleAlert size={18} className="mt-0.5 shrink-0" aria-hidden />
-            <span className="min-w-0 flex-1 break-words">{error}</span>
+            <span className="min-w-0 flex-1 break-words">
+              <strong>My brain glitched 🤯 Your text is saved, try again?</strong> <span className="opacity-80">{error}</span>
+            </span>
           </div>
         )}
-        <Button type="submit" size="lg" className="w-full" disabled={empty || submitting} aria-keyshortcuts="Control+Enter">
+        <Button type="submit" size="lg" className="btn-pop w-full" disabled={empty || submitting} aria-keyshortcuts="Control+Enter">
           {submitting ? (
-            <>
-              <Loader2 size={18} className="animate-spin" aria-hidden />
-              Reading your update…
-            </>
+            "Reading your update…"
           ) : error ? (
             "Try again"
           ) : isEdit ? (

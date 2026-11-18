@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Bricolage_Grotesque, Figtree } from "next/font/google";
+import { Bricolage_Grotesque, Figtree, Gaegu } from "next/font/google";
 import { THEME_STORAGE_KEY } from "@/lib/constants";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["600", "700", "800"],
   variable: "--font-bricolage",
   display: "swap",
 });
@@ -15,6 +15,14 @@ const sans = Figtree({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-figtree",
+  display: "swap",
+});
+
+/** Handwritten face for speech bubbles and stickers ("GOOD JOB!"). */
+const hand = Gaegu({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-gaegu",
   display: "swap",
 });
 
@@ -34,8 +42,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#13A38B" },
-    { media: "(prefers-color-scheme: dark)", color: "#0F1216" },
+    { media: "(prefers-color-scheme: light)", color: "#FBF8EE" },
+    { media: "(prefers-color-scheme: dark)", color: "#161614" },
   ],
 };
 
@@ -44,7 +52,7 @@ const themeScript = `try{var t=localStorage.getItem(${JSON.stringify(THEME_STORA
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${hand.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

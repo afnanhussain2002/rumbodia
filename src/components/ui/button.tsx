@@ -13,7 +13,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-brand text-on-brand hover:bg-brand-strong active:bg-brand-strong",
+  primary: "bg-mood-500 text-mood-ink hover:bg-mood-600 active:bg-mood-600",
   secondary: "bg-card text-ink border border-line hover:bg-bg active:bg-bg",
   ghost: "text-ink hover:bg-bg active:bg-bg",
   danger: "bg-danger text-white hover:opacity-90 active:opacity-90",
@@ -27,7 +27,7 @@ const SIZES: Record<Size, string> = {
 
 export const buttonClass = (variant: Variant = "primary", size: Size = "md", className?: string) =>
   cn(
-    "inline-flex items-center justify-center gap-2 rounded-[14px] font-semibold transition-colors select-none",
+    "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors select-none",
     "disabled:cursor-not-allowed disabled:opacity-50",
     VARIANTS[variant],
     SIZES[size],

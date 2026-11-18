@@ -1,5 +1,8 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { TodayScreen } from "@/features/today/components/today-screen";
 
-export default function AppIndex() {
-  redirect("/app/stats");
+export const metadata: Metadata = { title: "Today" };
+
+export default function TodayPage() {
+  return <TodayScreen />;
 }

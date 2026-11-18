@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Create your account" };
 
 export default function SignUpPage() {
   return (
-    <AuthFrame>
+    <AuthFrame greeting="It's more fun together!">
       <Suspense>
         <SignUp />
       </Suspense>

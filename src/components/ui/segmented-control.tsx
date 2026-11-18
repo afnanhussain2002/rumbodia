@@ -71,7 +71,7 @@ export function SegmentedControl<T extends string>({
               "disabled:cursor-not-allowed disabled:opacity-60",
               size === "sm" ? "min-h-9 min-w-9 px-3 text-[13px]" : "min-h-10 px-3.5 text-sm",
               fullWidth && "flex-1",
-              selected ? "bg-card text-brand-strong shadow-sm" : "text-ink-soft hover:text-ink",
+              selected ? "bg-ink text-bg shadow-sm" : "text-ink-soft hover:text-ink",
             )}
           >
             {opt.label}

@@ -56,6 +56,31 @@ export function SettingsForm() {
               ]}
             />
           </Row>
+          <Row label="Color follows my mood" hint="The app's color changes with today's level. Off keeps it a calm yellow.">
+            <SegmentedControl
+              label="Color follows my mood"
+              size="sm"
+              value={settings.followMood ? "on" : "off"}
+              onChange={(v) => set({ followMood: v === "on" })}
+              options={[
+                { value: "on", label: "On" },
+                { value: "off", label: "Off" },
+              ]}
+            />
+          </Row>
+          <Row label="Mascot animations" hint="Rumbo's bouncing, blinking and confetti.">
+            <SegmentedControl
+              label="Mascot animations"
+              size="sm"
+              value={settings.mascotMotion}
+              onChange={(mascotMotion) => set({ mascotMotion })}
+              options={[
+                { value: "on", label: "On" },
+                { value: "reduced", label: "Reduced" },
+                { value: "off", label: "Off" },
+              ]}
+            />
+          </Row>
           <Row label="Show scores as" hint="Charts always use the numbers.">
             <SegmentedControl
               label="Show scores as"

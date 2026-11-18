@@ -33,9 +33,10 @@ export function DayCell({ day, inMonth, average, count, isToday, isFuture, isSel
       aria-current={isToday ? "date" : undefined}
       aria-pressed={isSelected}
       className={cn(
-        "flex min-w-0 flex-col items-center gap-1 rounded-[14px] py-1.5 transition-opacity",
-        "hover:bg-bg disabled:cursor-default disabled:hover:bg-transparent",
-        isSelected && "bg-brand-soft hover:bg-brand-soft",
+        "flex min-w-0 flex-col items-center gap-1 rounded-[18px] py-1.5 transition-opacity",
+        "hover:bg-mood-50 disabled:cursor-default disabled:hover:bg-transparent",
+        isSelected && "bg-mood-100 hover:bg-mood-100",
+        isToday && "ring-2 ring-ink ring-inset",
         faded && "opacity-25",
         !inMonth && !faded && "opacity-40",
       )}
@@ -49,7 +50,7 @@ export function DayCell({ day, inMonth, average, count, isToday, isFuture, isSel
       <span
         className={cn(
           "text-[13px] leading-none whitespace-nowrap tabular sm:text-[14px]",
-          isToday ? "font-bold text-brand-strong" : "font-medium text-ink",
+          isToday ? "font-extrabold text-ink" : "font-medium text-ink",
         )}
       >
         {date}

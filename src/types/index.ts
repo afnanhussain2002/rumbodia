@@ -53,6 +53,10 @@ export interface Settings {
   /** "05:00" style local times */
   timeOfDayStarts: TimeOfDayStarts;
   scoreDisplay: "numbers" | "levels";
+  /** The app's accent color follows today's level (off = neutral Steady yellow). */
+  followMood: boolean;
+  /** Rumbo's idle animations and confetti. */
+  mascotMotion: "on" | "reduced" | "off";
 }
 
 export interface WeeklyInsight {

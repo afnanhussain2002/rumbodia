@@ -14,6 +14,7 @@ import { IconButton } from "@/components/ui/icon-button";
 import { SkeletonLines } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import { Rumbo } from "@/features/mascot/rumbo";
 
 interface WeeklyInsightCardProps {
   /** Any day in the week to describe. */
@@ -56,7 +57,12 @@ export function WeeklyInsightCard({ day, weekStartsOn, allEntries, entriesLoaded
   return (
     <Card aria-labelledby="weekly-title" className={className} aria-busy={loading || undefined}>
       <CardHeader
-        title="This week in a sentence"
+        title={
+          <span className="inline-flex items-center gap-2">
+            <Rumbo level={insight?.bestDay ? scoreToLevel(insight.bestDay.average).key : "steady"} size={30} decorative />
+            <span className="font-hand text-[24px] font-bold">A letter from Rumbo</span>
+          </span>
+        }
         titleId="weekly-title"
         subtitle={range}
         actions={
@@ -85,7 +91,10 @@ export function WeeklyInsightCard({ day, weekStartsOn, allEntries, entriesLoaded
         </div>
       ) : insight ? (
         <div className="space-y-3">
-          <p className="font-display text-[19px] leading-snug font-semibold">&ldquo;{insight.headline}&rdquo;</p>
+          <p className="font-display text-[19px] leading-snug font-semibold">
+            <span className="text-ink-soft">Dear you, </span>
+            {insight.headline}
+          </p>
           {(insight.bestDay || insight.hardDay) && (
             <p className="flex flex-wrap gap-x-2 text-[15px] text-ink-soft">
               {insight.bestDay && <DayStat label="Best day" day={insight.bestDay.day} average={insight.bestDay.average} />}
@@ -94,11 +103,12 @@ export function WeeklyInsightCard({ day, weekStartsOn, allEntries, entriesLoaded
             </p>
           )}
           {insight.suggestion && (
-            <p className="rounded-[14px] bg-brand-soft p-3 text-[15px]">
+            <p className="rounded-[18px] bg-brand-soft p-3 text-[15px]">
               <span className="font-semibold text-brand-strong">Try next week: </span>
               {insight.suggestion}
             </p>
           )}
+          <p className="text-right font-hand text-[19px] text-ink-soft">— Rumbo</p>
           {insight.entryCount !== weekCount && (
             <p className="text-[13px] text-ink-soft">Based on {insight.entryCount} updates. Refresh to include the newest.</p>
           )}

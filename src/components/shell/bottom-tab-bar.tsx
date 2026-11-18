@@ -4,19 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
 import { FabButton } from "@/components/shell/fab-button";
-import { TAB_ITEMS } from "@/components/shell/nav-items";
+import { TAB_ITEMS, isNavActive } from "@/components/shell/nav-items";
 
 interface BottomTabBarProps {
   hrefFor: (path: string) => string;
   onNew: () => void;
 }
 
+/** Mobile: the reference's dark floating pill bar, with the + in the mood color. */
 export function BottomTabBar({ hrefFor, onNew }: BottomTabBarProps) {
   const pathname = usePathname();
-  const [first, second, third, fourth] = TAB_ITEMS;
+  const [today, entries, stats, calendar, more] = TAB_ITEMS;
 
   const tab = (item: (typeof TAB_ITEMS)[number]) => {
-    const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+    const active = isNavActive(pathname, item.href);
     const Icon = item.icon;
     return (
       <Link
@@ -24,12 +25,12 @@ export function BottomTabBar({ hrefFor, onNew }: BottomTabBarProps) {
         href={hrefFor(item.href)}
         aria-current={active ? "page" : undefined}
         className={cn(
-          "flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 text-[12px] font-semibold sm:text-[13px]",
-          active ? "text-on-brand" : "text-on-brand/65",
+          "flex h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-[11px] font-semibold transition-colors",
+          active ? "text-mood-500" : "text-cream/60 hover:text-cream",
         )}
       >
-        <Icon size={22} strokeWidth={2} aria-hidden />
-        <span className="truncate">{item.label}</span>
+        <Icon size={21} strokeWidth={active ? 2.5 : 2} aria-hidden />
+        <span className="max-[379px]:sr-only">{item.label}</span>
       </Link>
     );
   };
@@ -37,16 +38,17 @@ export function BottomTabBar({ hrefFor, onNew }: BottomTabBarProps) {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-30 bg-brand pb-[env(safe-area-inset-bottom)] lg:hidden"
+      className="fixed inset-x-3 bottom-[calc(10px+env(safe-area-inset-bottom))] z-30 md:hidden"
     >
-      <div className="mx-auto flex h-16 max-w-[720px] items-center px-2 sm:px-6">
-        {tab(first)}
-        {tab(second)}
-        <div className="flex flex-1 justify-center">
+      <div className="mx-auto flex h-[64px] max-w-[520px] items-center gap-0.5 rounded-full bg-[#1c1c1a] px-2 shadow-[0_10px_30px_rgb(0_0_0/0.25)] ring-1 ring-white/10">
+        {tab(today)}
+        {tab(entries)}
+        <div className="flex shrink-0 justify-center px-1">
           <FabButton onClick={onNew} />
         </div>
-        {tab(third)}
-        {tab(fourth)}
+        {tab(stats)}
+        {tab(calendar)}
+        {tab(more)}
       </div>
     </nav>
   );

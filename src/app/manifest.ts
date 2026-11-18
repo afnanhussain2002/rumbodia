@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Rumbodia",
     short_name: "Rumbodia",
     description: "Which way is your day going?",
-    start_url: "/app/stats",
+    start_url: "/app",
     scope: "/",
     display: "standalone",
     background_color: "#F2F3F7",

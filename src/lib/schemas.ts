@@ -115,6 +115,8 @@ export const settingsSchema = z.object({
   weekStartsOn: z.union([z.literal(0), z.literal(1)]),
   timeOfDayStarts: z.object({ morning: hhmm, noon: hhmm, afternoon: hhmm, night: hhmm }),
   scoreDisplay: z.enum(["numbers", "levels"]),
+  followMood: z.boolean(),
+  mascotMotion: z.enum(["on", "reduced", "off"]),
 });
 
 /** PUT /api/settings */
@@ -170,3 +172,28 @@ export type CreateEntryInput = z.infer<typeof createEntryInputSchema>;
 export type PatchEntryInput = z.infer<typeof patchEntryInputSchema>;
 export type ImportInput = z.infer<typeof importInputSchema>;
 export type ExportBundleInput = z.infer<typeof exportBundleSchema>;
+
+// ─── Admin ───────────────────────────────────────────────────────────────────
+
+const adminNote = z.string().trim().max(300).optional();
+
+/** One action on a user's access, from the admin screen. */
+export const adminAccessInputSchema = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal("grant"),
+    plan: z.enum(["monthly", "yearly", "lifetime"]),
+    /** How long, in days. Omitted or 0 = forever. Ignored for lifetime. */
+    days: z.number().int().min(0).max(3650).optional(),
+    note: adminNote,
+  }),
+  z.object({ action: z.literal("revoke"), note: adminNote }),
+  z.object({ action: z.literal("extendTrial"), days: z.number().int().min(1).max(365), note: adminNote }),
+  z.object({ action: z.literal("block"), note: adminNote }),
+  z.object({ action: z.literal("unblock"), note: adminNote }),
+]);
+
+export const adminDeleteInputSchema = z.object({
+  confirmEmail: z.string().trim().min(3, { error: "Type the user's email to confirm." }),
+});
+
+export type AdminAccessInput = z.infer<typeof adminAccessInputSchema>;

@@ -24,9 +24,10 @@ export function DayDetail({ day, compactHeader }: { day: string; compactHeader?:
   const isFuture = day > toDayKey(new Date());
 
   return (
-    <div>
-      <div className="flex items-center gap-4">
-        <FaceIcon level={level?.key ?? null} size={56} label={level ? `${level.name} day` : "No updates"} />
+    // The day's own level colors this sheet, whatever the app mood is.
+    <div data-mood={level?.key}>
+      <div className="flex items-center gap-4 rounded-[24px] bg-mood-50 p-3">
+        <FaceIcon level={level?.key ?? null} size={64} animated label={level ? `${level.name} day` : "No updates"} />
         <div className="min-w-0">
           {!compactHeader && <p className="font-display text-xl font-bold">{formatLongDay(day)}</p>}
           {compactHeader && <h2 className="font-display text-xl font-bold">{formatLongDay(day)}</h2>}

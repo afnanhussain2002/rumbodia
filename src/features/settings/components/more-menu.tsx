@@ -3,10 +3,11 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, CreditCard, Database, Settings, Target } from "lucide-react";
+import { ChevronRight, CreditCard, Database, Settings, ShieldCheck, Target } from "lucide-react";
 import { useIsDesktop } from "@/hooks/use-media-query";
 import { Card } from "@/components/ui/card";
 import { AboutCard } from "@/features/settings/components/settings-form";
+import { useIsAdmin } from "@/features/admin/hooks/use-admin";
 
 const ROWS = [
   { href: "/app/more/goals", label: "Goals", hint: "What Gemini scores against", icon: Target },
@@ -18,6 +19,10 @@ const ROWS = [
 export function MoreMenu() {
   const isDesktop = useIsDesktop();
   const router = useRouter();
+  const isAdmin = useIsAdmin();
+  const rows = isAdmin
+    ? [...ROWS, { href: "/app/admin", label: "Admin", hint: "Users, access, delete accounts", icon: ShieldCheck }]
+    : ROWS;
 
   // On desktop these items live in the sidebar, so there is no More page.
   useEffect(() => {
@@ -28,7 +33,7 @@ export function MoreMenu() {
     <div className="mx-auto max-w-[640px] space-y-4">
       <Card className="p-2 lg:p-2">
         <ul className="divide-y divide-line">
-          {ROWS.map((row) => {
+          {rows.map((row) => {
             const Icon = row.icon;
             return (
               <li key={row.href}>

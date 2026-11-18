@@ -26,10 +26,10 @@ interface MonthHeaderProps {
 export function MonthHeader({ month, title, canGoNext, onPrev, onNext, onSearch, onNew }: MonthHeaderProps) {
   const heading = month ? formatMonthTitle(month) : (title ?? "");
   return (
-    <header className="sticky top-0 z-20 border-b border-line/70 bg-bg/90 pt-[env(safe-area-inset-top)] backdrop-blur-md">
+    <header className="sticky top-0 z-20 border-b border-line/60 bg-bg/80 pt-[env(safe-area-inset-top)] backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-[720px] items-center gap-1 px-4 min-[400px]:gap-2 sm:px-6 lg:max-w-[1100px] lg:px-8 2xl:max-w-[1240px]">
         {/* Mobile/tablet: logo links home. */}
-        <Link href="/" aria-label="Rumbodia home" className="-ml-1 inline-flex size-11 items-center justify-center lg:hidden">
+        <Link href="/" aria-label="Rumbodia home" className="-ml-1 inline-flex size-11 items-center justify-center md:hidden">
           <LogoMark size={30} />
         </Link>
 
@@ -65,7 +65,7 @@ export function MonthHeader({ month, title, canGoNext, onPrev, onNext, onSearch,
         </IconButton>
         <div className="hidden items-center gap-3 lg:flex">
           <SearchPanel inline />
-          <Button onClick={onNew} icon={<Plus size={18} aria-hidden />} aria-keyshortcuts="N">
+          <Button onClick={onNew} icon={<Plus size={18} aria-hidden />} aria-keyshortcuts="N" className="btn-pop">
             New update
           </Button>
         </div>

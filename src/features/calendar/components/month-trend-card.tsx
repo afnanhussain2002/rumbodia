@@ -10,6 +10,7 @@ import { formatScore, mean } from "@/lib/utils/scores";
 import { useCanHover, useIsDesktop, useReducedMotion } from "@/hooks/use-media-query";
 import { useResizeObserver } from "@/hooks/use-resize-observer";
 import { Card, CardHeader } from "@/components/ui/card";
+import { FaceIcon } from "@/components/levels/face-icon";
 import { ChartSvg, makeGeometry } from "@/features/stats/components/rumbo-chart/chart-svg";
 import { useAnimatedValues } from "@/features/stats/components/rumbo-chart/use-animated-values";
 
@@ -98,6 +99,14 @@ export function MonthTrendCard({ month, entries, selectedDay, onSelect, classNam
         <p className="py-6 text-center text-ink-soft">Log an update and your line starts here.</p>
       ) : (
         <>
+          <div className="mb-4 flex items-center gap-3 rounded-[20px] bg-mood-50 p-3" data-mood={scoreToLevel(avg!).key}>
+            <FaceIcon level={scoreToLevel(avg!).key} size={52} animated decorative />
+            <p className="font-display text-[20px] leading-tight font-bold">
+              {isCurrentMonthKey(month) ? "This month you're " : `In ${monthName} you were `}
+              <span style={{ color: scoreToLevel(avg!).textColorVar }}>{scoreToLevel(avg!).name}</span>{" "}
+              {trend ? (trend.direction === "up" ? "📈" : trend.direction === "down" ? "📉" : "➡️") : ""}
+            </p>
+          </div>
           <dl className="mb-4 grid grid-cols-3 gap-2">
             <Stat label="Average">
               <span style={{ color: scoreToLevel(avg!).textColorVar }}>{formatScore(avg!)}</span>
@@ -177,9 +186,13 @@ export function MonthTrendCard({ month, entries, selectedDay, onSelect, classNam
   );
 }
 
+function isCurrentMonthKey(month: string): boolean {
+  return month === toDayKey(new Date()).slice(0, 7);
+}
+
 function Stat({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="min-w-0 rounded-[12px] bg-bg px-3 py-2">
+    <div className="min-w-0 rounded-[16px] bg-bg px-3 py-2">
       <dt className="text-[12px] font-semibold uppercase tracking-wide text-ink-soft">{label}</dt>
       <dd className="mt-0.5 font-display text-xl font-bold tabular leading-tight">{children}</dd>
     </div>

@@ -48,6 +48,8 @@ export const DEFAULT_SETTINGS: Settings = {
   weekStartsOn: 1,
   timeOfDayStarts: { morning: "05:00", noon: "11:00", afternoon: "14:00", night: "18:00" },
   scoreDisplay: "numbers",
+  followMood: true,
+  mascotMotion: "on",
 };
 
 /** Allowed goal icons (lucide names). The UI maps these to components. */

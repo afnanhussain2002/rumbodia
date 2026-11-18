@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Sign in" };
 
 export default function SignInPage() {
   return (
-    <AuthFrame>
+    <AuthFrame greeting="Welcome back!">
       <Suspense>
         <SignIn />
       </Suspense>

@@ -137,7 +137,7 @@ export function useDeleteEntry() {
       );
 
       toast.show({
-        message: "Update deleted.",
+        message: "Poof! Update deleted.",
         action: {
           label: "Undo",
           onClick: () => {

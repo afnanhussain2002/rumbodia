@@ -13,6 +13,7 @@ import { MonthHeader } from "@/components/shell/month-header";
 import { isMonthTab, PAGE_TITLES } from "@/components/shell/nav-items";
 import { ShellContext, type NewUpdateRequest, type ShellApi } from "@/components/shell/shell-context";
 import { Sidebar } from "@/components/shell/sidebar";
+import { BackgroundBlobs } from "@/components/fun/decor";
 import { DaySheet } from "@/features/calendar/components/day-sheet";
 import { SearchPanel } from "@/features/entries/components/search-panel";
 import { NewUpdateSheet } from "@/features/new-update/components/new-update-sheet";
@@ -109,8 +110,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ShellContext.Provider value={api}>
+      <BackgroundBlobs />
       <Sidebar hrefFor={hrefFor} onNew={() => api.openNewUpdate()} />
-      <div className="min-h-[100dvh] lg:pl-[240px] 2xl:pl-[260px]">
+      <div className="min-h-[100dvh] md:pl-[72px] lg:pl-[240px] 2xl:pl-[260px]">
         <MonthHeader
           month={monthPage ? monthNav.month : null}
           title={title}
@@ -122,7 +124,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         />
         <main
           id="main"
-          className="mx-auto w-full max-w-[720px] px-4 pt-4 pb-[calc(64px+env(safe-area-inset-bottom)+32px)] sm:px-6 sm:pt-6 lg:max-w-[1100px] lg:px-8 lg:pb-12 2xl:max-w-[1240px]"
+          className="mx-auto w-full max-w-[720px] px-4 pt-4 pb-[calc(74px+env(safe-area-inset-bottom)+32px)] sm:px-6 sm:pt-6 md:pb-12 lg:max-w-[1100px] lg:px-8 xl:max-w-[1180px] 2xl:max-w-[1240px]"
         >
           <TrialBanner />
           {locked ? <Paywall /> : children}

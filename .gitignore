@@ -9,3 +9,10 @@ data/*.json
 
 # npm run screenshots output
 screenshots/
+
+# Cloudflare / OpenNext
+.open-next
+.wrangler
+.dev.vars
+.env.cloudflare
+.env*.local

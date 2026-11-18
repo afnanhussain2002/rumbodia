@@ -53,7 +53,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         className={cn(
           "pointer-events-none fixed inset-x-0 z-[70] flex flex-col items-center gap-2 px-4",
           // Mobile/tablet: bottom center, above the tab bar. Desktop: bottom right.
-          "bottom-[calc(84px+env(safe-area-inset-bottom))] lg:inset-x-auto lg:right-6 lg:bottom-6 lg:items-end lg:px-0",
+          "bottom-[calc(88px+env(safe-area-inset-bottom))] md:bottom-6 lg:inset-x-auto lg:right-6 lg:items-end lg:px-0",
           "[.no-tabbar_&]:bottom-[calc(16px+env(safe-area-inset-bottom))]",
         )}
       >
@@ -87,8 +87,8 @@ function Toast({ toast, onDone }: { toast: ToastItem; onDone: () => void }) {
     <div
       role={toast.tone === "error" ? "alert" : "status"}
       className={cn(
-        "pointer-events-auto flex w-full max-w-[420px] animate-modal-in items-center gap-3 rounded-[14px] px-4 py-3 text-[15px] font-medium shadow-lg",
-        toast.tone === "error" ? "bg-danger text-white" : "bg-ink text-card",
+        "pointer-events-auto flex w-full max-w-[420px] animate-modal-in items-center gap-3 rounded-full px-5 py-2.5 text-[15px] font-medium shadow-lg",
+        toast.tone === "error" ? "bg-danger text-white" : "bg-ink-fixed text-cream",
       )}
     >
       <span className="min-w-0 flex-1 break-words">{toast.message}</span>
@@ -100,7 +100,7 @@ function Toast({ toast, onDone }: { toast: ToastItem; onDone: () => void }) {
             toast.action!.onClick();
             onDone();
           }}
-          className="min-h-10 shrink-0 rounded-lg px-3 font-bold text-brand hover:bg-white/10"
+          className="min-h-10 shrink-0 rounded-full px-3 font-bold text-mood-500 hover:bg-white/10"
           style={toast.tone === "error" ? { color: "#fff" } : undefined}
         >
           {toast.action.label}

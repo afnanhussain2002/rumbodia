@@ -21,6 +21,16 @@ export interface BillingDoc {
   /** Set once a lifetime payment succeeds. Wins over any subscription. */
   lifetimePaidAt?: string | null;
   lastSyncedAt?: string;
+  /**
+   * Access given by an admin, without Stripe. Kept apart from `plan`/`status` because a Stripe sync
+   * overwrites those. `grantUntil` null = forever.
+   */
+  grantPlan?: PlanId | null;
+  grantUntil?: string | null;
+  grantedBy?: string | null;
+  grantedAt?: string | null;
+  /** Extra free-trial days added by an admin. */
+  trialExtraDays?: number;
 }
 
 const billing = () => collection<BillingDoc>("billing");
@@ -28,6 +38,15 @@ const billing = () => collection<BillingDoc>("billing");
 export const billingRepository = {
   async get(userId: string): Promise<BillingDoc | null> {
     return (await billing()).findOne({ _id: userId });
+  },
+
+  async getMany(userIds: string[]): Promise<BillingDoc[]> {
+    if (userIds.length === 0) return [];
+    return (await billing()).find({ _id: { $in: userIds } }).toArray();
+  },
+
+  async remove(userId: string): Promise<void> {
+    await (await billing()).deleteOne({ _id: userId });
   },
 
   async findByCustomer(customerId: string): Promise<BillingDoc | null> {

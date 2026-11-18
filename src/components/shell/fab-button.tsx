@@ -3,7 +3,7 @@
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
-/** The raised round + button in the middle of the bottom bar. */
+/** The round + button in the middle of the floating bar, in the mood color. */
 export function FabButton({ onClick, className }: { onClick: () => void; className?: string }) {
   return (
     <button
@@ -12,12 +12,12 @@ export function FabButton({ onClick, className }: { onClick: () => void; classNa
       aria-label="New update"
       aria-keyshortcuts="N"
       className={cn(
-        "relative -mt-5 inline-flex size-16 shrink-0 items-center justify-center rounded-full",
-        "border-[3px] border-brand bg-white text-brand shadow-lg transition-transform active:scale-95",
+        "inline-flex size-12 shrink-0 items-center justify-center rounded-full",
+        "bg-mood-500 text-mood-ink transition-transform hover:scale-105 active:scale-95",
         className,
       )}
     >
-      <Plus size={30} strokeWidth={2.6} aria-hidden />
+      <Plus size={26} strokeWidth={2.8} aria-hidden />
     </button>
   );
 }

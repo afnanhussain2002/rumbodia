@@ -54,6 +54,8 @@ async function ensureIndexes(db: Db): Promise<void> {
       db.collection("entries").createIndex({ userId: 1, createdAt: 1 }),
       db.collection("insights").createIndex({ userId: 1, weekStart: 1 }, { unique: true }),
       db.collection("billing").createIndex({ stripeCustomerId: 1 }, { sparse: true }),
+      db.collection("admin_audit").createIndex({ createdAt: -1 }),
+      db.collection("admin_audit").createIndex({ targetUserId: 1, createdAt: -1 }),
     ])
       .then(() => undefined)
       .catch((err) => {
@@ -64,7 +66,7 @@ async function ensureIndexes(db: Db): Promise<void> {
   return globalForMongo.__rumbodiaIndexes;
 }
 
-export type CollectionName = "entries" | "goals" | "settings" | "insights" | "billing";
+export type CollectionName = "entries" | "goals" | "settings" | "insights" | "billing" | "admin_audit";
 
 export async function collection<T extends Document>(name: CollectionName): Promise<Collection<T>> {
   const db = await getDb();

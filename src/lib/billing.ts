@@ -77,4 +77,6 @@ export interface BillingStatus {
   pastDue: boolean;
   /** The user has a Stripe customer, so the billing portal is available. */
   canManage: boolean;
+  /** Access was given by an admin (no payment). `currentPeriodEnd` is when it ends, null = forever. */
+  granted: boolean;
 }

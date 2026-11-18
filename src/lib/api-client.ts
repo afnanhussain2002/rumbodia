@@ -1,4 +1,6 @@
+import type { AdminAuditItem, AdminMe, AdminUserDetail, AdminUserList } from "@/lib/admin";
 import type { BillingStatus, PlanId } from "@/lib/billing";
+import type { AdminAccessInput } from "@/lib/schemas";
 import type {
   ApiErrorBody,
   Entry,
@@ -145,6 +147,18 @@ export const api = {
     request<{ billing: BillingStatus }>("/api/billing/confirm", json("POST", { sessionId })).then((r) => r.billing),
 
   exportUrl: (format: "json" | "csv") => `/api/export?format=${format}`,
+
+  // ─── Admin ───
+  adminMe: () => request<AdminMe>("/api/admin/me"),
+  adminUsers: (q: string, page: number) =>
+    request<AdminUserList>(`/api/admin/users?${new URLSearchParams({ q, page: String(page) })}`),
+  adminUser: (userId: string) => request<AdminUserDetail>(`/api/admin/users/${encodeURIComponent(userId)}`),
+  adminAccess: (userId: string, input: AdminAccessInput) =>
+    request<AdminUserDetail>(`/api/admin/users/${encodeURIComponent(userId)}/access`, json("POST", input)),
+  adminDeleteUser: (userId: string, confirmEmail: string) =>
+    request<{ ok: true }>(`/api/admin/users/${encodeURIComponent(userId)}`, json("DELETE", { confirmEmail })),
+  adminAudit: () => request<{ items: AdminAuditItem[] }>("/api/admin/audit").then((r) => r.items),
+  adminTeam: () => request<{ you: string; members: { email: string; userId: string | null; name: string | null }[] }>("/api/admin/team"),
 };
 
 export type { ExportBundle };

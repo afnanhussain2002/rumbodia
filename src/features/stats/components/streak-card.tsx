@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils/cn";
 import { formatShortWeekday, isoToDayKey, toDayKey } from "@/lib/utils/date";
 import { Card, CardHeader } from "@/components/ui/card";
 import { ShareButton } from "@/features/stats/components/share-button";
+import { Sticker } from "@/components/fun/decor";
 
 export function StreakCard({ entries, className }: { entries: Entry[]; className?: string }) {
   const today = toDayKey(new Date());
@@ -38,15 +39,18 @@ export function StreakCard({ entries, className }: { entries: Entry[]; className
             </li>
           ))}
         </ol>
-        <span
-          className="mb-6 inline-flex h-11 min-w-14 shrink-0 items-center justify-center rounded-full bg-brand-soft px-4 text-[22px] font-semibold text-brand-strong tabular"
-          aria-label={`Current streak: ${streak.current} day${streak.current === 1 ? "" : "s"}`}
-        >
-          {streak.current}
+        <span className="mb-6 shrink-0" aria-label={`Current streak: ${streak.current} day${streak.current === 1 ? "" : "s"}`}>
+          <Sticker className="text-[20px] tabular" rotate={-6}>
+            <span aria-hidden>🔥</span>
+            {streak.current} {streak.current === 1 ? "day" : "days"}!
+          </Sticker>
         </span>
       </div>
 
       {streak.atRisk && <p className="mt-2 text-[15px] font-medium text-brand-strong">Log today to keep your chain.</p>}
+      {!streak.atRisk && streak.current === 0 && streak.longest > 0 && (
+        <p className="mt-2 text-[15px] font-medium text-ink-soft">Streak reset. No drama, start a new one today.</p>
+      )}
 
       <div className="-mx-5 mt-4 flex items-center gap-2 border-t border-line px-5 pt-4 text-[15px] font-medium lg:-mx-6 lg:px-6">
         <Trophy size={20} className="text-amber" aria-hidden />
