@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { Show } from "@clerk/nextjs";
-import { ArrowRight, ChartNoAxesColumn, Lock, PenLine, Sparkles } from "lucide-react";
+import { ArrowRight, ChartNoAxesColumn, PenLine, Sparkles } from "lucide-react";
 import { TRIAL_DAYS } from "@/lib/billing";
 import { LEVELS, type LevelKey } from "@/lib/levels";
 import { UserMenu } from "@/components/auth/user-menu";
@@ -10,7 +10,7 @@ import { buttonClass } from "@/components/ui/button";
 import { Sparks, Squiggle, Sticker } from "@/components/fun/decor";
 import { Hl } from "@/components/fun/ink-hero";
 import { Rumbo } from "@/features/mascot/rumbo";
-import { SpeechBubble } from "@/features/mascot/speech-bubble";
+import { HeroMascot } from "@/features/landing/components/hero-mascot";
 import { LiveDemo } from "@/features/landing/components/live-demo";
 
 export const WRAP = "mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-8";
@@ -80,7 +80,7 @@ export function HeroPanel() {
             </h1>
             <Squiggle className="mt-3" width={170} />
             <p className="mt-6 max-w-[460px] text-[18px] leading-relaxed text-cream/75">
-              Write what you did. Gemini reads it against your goals and scores it from −10 to +10. Rumbo, your little buddy, shows you the direction.
+              Write what you did. Rumbodia reads it against your goals and scores it from −10 to +10. Rumbo, your little buddy, shows you the direction.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <Link href="/sign-up" className={buttonClass("primary", "lg", "btn-pop !border-cream h-14 px-7 text-[17px]")}>
@@ -92,15 +92,7 @@ export function HeroPanel() {
             </div>
           </div>
 
-          {/* Rumbo peeking in from the bottom-right edge, like the reference */}
-          <div aria-hidden className="pointer-events-none absolute -right-16 -bottom-28 z-[1] sm:-right-10 lg:right-6 lg:-bottom-24">
-            <Rumbo level="steady" size={360} color="var(--mood-500)" decorative limbs={false} animated className="max-sm:size-[220px]" />
-          </div>
-          <div className="absolute right-[150px] bottom-[150px] z-[3] hidden md:block lg:right-[300px] lg:bottom-[190px]">
-            <SpeechBubble tail="bottom-right" size="lg" className="-rotate-3">
-              I&rsquo;ll keep you honest!
-            </SpeechBubble>
-          </div>
+          <HeroMascot />
         </section>
       </div>
     </>
@@ -152,7 +144,7 @@ export function LevelsShowcase() {
 
 const STEPS: { title: string; body: string; icon: React.ReactNode; level: LevelKey }[] = [
   { title: "Write", body: "A short numbered list of what you did. Morning, noon or night.", icon: <PenLine size={22} aria-hidden />, level: "steady" },
-  { title: "Get scored", body: "Gemini reads it against your goals: −10 to +10, with wins and slips.", icon: <Sparkles size={22} aria-hidden />, level: "rising" },
+  { title: "Get scored", body: "It reads it against your goals: −10 to +10, with wins and slips.", icon: <Sparkles size={22} aria-hidden />, level: "rising" },
   { title: "See your direction", body: "Faces, colors and charts show where your weeks and months are heading.", icon: <ChartNoAxesColumn size={22} aria-hidden />, level: "soaring" },
 ];
 
@@ -230,7 +222,7 @@ export function StatsPreview() {
 
 const FAQ = [
   {
-    q: "What does Gemini see?",
+    q: "What does the AI see?",
     a: "Only the text of each update, your goals and your last few updates for context. Your log is private to your account.",
   },
   { q: "Is Rumbo going to judge me?", a: "Never mean. Honest, yes: a bad day gets a negative score. But Rumbo is supportive on rough days." },
@@ -262,25 +254,32 @@ export function FaqSection() {
   );
 }
 
-export function PrivacyNote() {
-  return (
-    <section aria-label="Privacy" className={`${WRAP} py-10`}>
-      <div className="flex items-start gap-4 rounded-[24px] bg-mood-100 p-6">
-        <Lock size={22} className="mt-0.5 shrink-0 text-mood-strong" aria-hidden />
-        <p className="text-[17px]">Your log is private to your account. Only the text of each update is sent to Gemini to score it.</p>
-      </div>
-    </section>
-  );
-}
-
 export function Footer() {
   return (
     <footer className="border-t border-line">
       <div className={`${WRAP} flex flex-col gap-3 py-8 text-[15px] text-ink-soft sm:flex-row sm:items-center sm:justify-between`}>
-        <span className="inline-flex items-center gap-3">
-          <Logo variant="icon" size={24} />
-          Rumbodia · {new Date().getFullYear()}
-        </span>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <span className="inline-flex items-center gap-3">
+            <Logo variant="icon" size={24} />
+            Rumbodia · {new Date().getFullYear()}
+          </span>
+          <span className="inline-flex items-center gap-2 font-mono text-[14px]">
+            Built by
+            <a
+              href="https://x.com/ShipItAfnan"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full font-semibold text-ink underline decoration-ink/40 underline-offset-4 hover:decoration-ink"
+              aria-label="Afnan on X (opens in a new tab)"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/team/afnan.jpg" alt="" width={24} height={24} className="size-6 rounded-full object-cover ring-2 ring-line" />
+              Afnan
+            </a>
+          </span>
+          <Link href="/blog" className="hover:text-ink">Blog</Link>
+          <Link href="/privacy" className="hover:text-ink">Privacy policy</Link>
+        </div>
         <span className="font-hand text-[18px]">Made with a lot of good days (and a few rough ones).</span>
       </div>
     </footer>

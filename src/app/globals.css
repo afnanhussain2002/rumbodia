@@ -243,6 +243,7 @@
 
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-logo: var(--font-poppins), "Poppins", system-ui, sans-serif;
   --font-hand: var(--font-gaegu), "Patrick Hand", "Comic Sans MS", cursive;
 
   --radius-card: 24px;
@@ -614,9 +615,21 @@ mark {
   letter-spacing: -0.03em;
 }
 
+/* The logo triangle used as a character: a slow float. */
+@keyframes mark-bob {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-12px) rotate(1.5deg); }
+}
+.mark-bob {
+  transform-origin: 50% 100%;
+  animation: mark-bob 4s ease-in-out infinite;
+}
+
 /* In-app "Mascot animations" setting. */
 [data-motion="off"] .rumbo-anim *,
 [data-motion="off"] .blob,
+[data-motion="off"] .mark-bob,
+[data-motion="reduced"] .mark-bob,
 [data-motion="reduced"] .rumbo-anim .rumbo-body,
 [data-motion="reduced"] .rumbo-anim .rumbo-sparkle,
 [data-motion="reduced"] .rumbo-anim .rumbo-drop,
@@ -629,5 +642,6 @@ mark {
 }
 @media (prefers-reduced-motion: reduce) {
   .confetti-layer { display: none; }
+  .mark-bob { animation: none; }
   :root, [data-mood] { transition: none; }
 }

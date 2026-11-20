@@ -9,7 +9,7 @@ import { Button, buttonClass } from "@/components/ui/button";
 import { Sticker } from "@/components/fun/decor";
 import { Rumbo } from "@/features/mascot/rumbo";
 
-const FEATURES = ["Unlimited daily updates scored by Gemini", "Weekly insights", "Stats, calendar and full history", "Export anytime"];
+const FEATURES = ["Unlimited daily updates scored by AI", "Weekly insights", "Stats, calendar and full history", "Export anytime"];
 
 const money = (n: number) => `$${Number.isInteger(n) ? n : n.toFixed(2)}`;
 

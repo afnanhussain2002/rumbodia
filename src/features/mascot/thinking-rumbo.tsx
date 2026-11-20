@@ -31,7 +31,7 @@ export function ThinkingRumbo({ size = 120 }: { size?: number }) {
       <div key={tick} className="animate-think" style={{ width: size, height: size }}>
         <Rumbo level={level} size={size} color="var(--mood-500)" animated={false} limbs decorative />
       </div>
-      <span className="sr-only">Gemini is reading your update.</span>
+      <span className="sr-only">Reading your update.</span>
     </div>
   );
 }

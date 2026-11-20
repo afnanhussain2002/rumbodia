@@ -25,7 +25,15 @@ export const PROMPT_TAG_COUNT = 30;
 export const CONTEXT_ENTRY_COUNT = 5;
 
 export const DEFAULT_GEMINI_MODEL = "gemini-3.5-flash";
-export const GEMINI_TIMEOUT_MS = 45_000;
+/** One Gemini call. A model that hasn't answered by then rarely does; the next model is tried. */
+export const GEMINI_ATTEMPT_TIMEOUT_MS = 10_000;
+/** All Gemini tries together. The whole save must finish well inside the platform's request limits. */
+export const GEMINI_TOTAL_BUDGET_MS = 20_000;
+export const OPENAI_TIMEOUT_MS = 25_000;
+/** If Gemini hasn't answered after this long, OpenAI is asked too and the first good answer wins. */
+export const OPENAI_HEDGE_DELAY_MS = 8_000;
+/** Most recent updates used to find recurring boosters/drains for a prompt (not the whole log). */
+export const PATTERN_ENTRY_LIMIT = 200;
 
 /** Backfilled entries may not be later than now + this. */
 export const FUTURE_TOLERANCE_MS = 5 * 60_000;

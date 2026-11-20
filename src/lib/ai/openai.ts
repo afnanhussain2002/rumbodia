@@ -1,5 +1,5 @@
 import "server-only";
-import { GEMINI_TIMEOUT_MS } from "@/lib/constants";
+import { OPENAI_TIMEOUT_MS } from "@/lib/constants";
 import { AppError } from "@/server/http";
 
 const URL = "https://api.openai.com/v1/chat/completions";
@@ -71,7 +71,7 @@ export async function generateOpenAiJson({ apiKey, model, systemInstruction, pro
           json_schema: { name: "result", strict: true, schema: toOpenAiSchema(responseSchema as GeminiSchema) },
         },
       }),
-      signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
+      signal: AbortSignal.timeout(OPENAI_TIMEOUT_MS),
     });
   } catch (err) {
     if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {

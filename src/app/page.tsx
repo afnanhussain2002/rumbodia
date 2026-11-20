@@ -8,7 +8,6 @@ import {
   Hero,
   HowItWorks,
   LevelsShowcase,
-  PrivacyNote,
   StatsPreview,
 } from "@/features/landing/components/landing-sections";
 
@@ -25,7 +24,6 @@ export default function LandingPage() {
         <StatsPreview />
         <Pricing />
         <FaqSection />
-        <PrivacyNote />
       </main>
       <Footer />
     </div>

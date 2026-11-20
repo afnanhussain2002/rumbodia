@@ -84,7 +84,7 @@ function guess(text: string): Sample {
     label: "Yours",
     text,
     score,
-    reason: "Demo guess from keywords only. Sign up and Gemini reads it properly, against your own goals.",
+    reason: "Demo guess from keywords only. Sign up and it gets read properly, against your own goals.",
     wins: [],
     slips: [],
   };

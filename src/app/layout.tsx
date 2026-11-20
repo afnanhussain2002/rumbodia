@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Bricolage_Grotesque, Figtree, Gaegu } from "next/font/google";
+import { Bricolage_Grotesque, Figtree, Gaegu, Poppins } from "next/font/google";
+import Script from "next/script";
 import { THEME_STORAGE_KEY } from "@/lib/constants";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -26,10 +29,28 @@ const hand = Gaegu({
   display: "swap",
 });
 
+/** Only for the "rumbodia" wordmark. latin-ext carries the dotless i the logo's triangle dot sits on. */
+const logoFont = Poppins({
+  subsets: ["latin", "latin-ext"],
+  weight: ["800"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: { default: "Rumbodia: which way is your day going?", template: "%s · Rumbodia" },
-  description: "Write what you did. Gemini reads it against your goals. Your face, color and chart show the direction.",
-  applicationName: "Rumbodia",
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_TITLE, template: `%s | ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    type: "website",
+  },
+  twitter: { card: "summary_large_image", title: SITE_TITLE, description: SITE_DESCRIPTION },
+  applicationName: SITE_NAME,
   appleWebApp: { capable: true, title: "Rumbodia", statusBarStyle: "default" },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -52,7 +73,7 @@ const themeScript = `try{var t=localStorage.getItem(${JSON.stringify(THEME_STORA
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${hand.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${hand.variable} ${logoFont.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
@@ -66,6 +87,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           {children}
         </ClerkProvider>
+        <Script
+          src="https://datafa.st/js/script.js"
+          data-website-id="dfid_ATdS6i35gPQBF79FMveoS"
+          data-domain="rumbodia.site"
+          strategy="afterInteractive"
+        />
+        <GoogleAnalytics gaId="GTM-MZ6PFHP6" />
       </body>
     </html>
   );
